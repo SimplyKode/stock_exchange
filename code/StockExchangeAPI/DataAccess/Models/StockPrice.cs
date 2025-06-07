@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Models
 {
-    public class StockPrice
+    public partial class StockPrice
     {
-        [Required]
-        public string StockSymbol { get; set; }
-        [Required]
-        public double Price{ get; set; }        
+        public string Symbol { get; set; } = null!;
+        public decimal? Price { get; set; }
 
+        public virtual Stock SymbolNavigation { get; set; } = null!;
     }
 }

@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Models
 {
-    public class Stock
+    public partial class Stock
     {
-        public string Symbol { get; set; }
-        public string Name{ get; set; }        
+        public Stock()
+        {
+            StockTransactions = new HashSet<StockTransaction>();
+        }
 
+        public string Symbol { get; set; } = null!;
+        public string? Name { get; set; }
+
+        public virtual StockPrice StockPrice { get; set; } = null!;
+        public virtual ICollection<StockTransaction> StockTransactions { get; set; }
     }
 }

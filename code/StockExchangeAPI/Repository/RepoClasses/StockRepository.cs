@@ -1,26 +1,77 @@
-﻿using System;
+﻿using DataAccess.Models;
+using Microsoft.EntityFrameworkCore;
+using Repository.Interfaces;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Interfaces
+namespace Repository.RepoClasses
 {
     public class StockRepository : IStockRepository
     {
-        public Dictionary<string, double> GetStockPrice(int pageNumber, int pageSize) 
+        private readonly DevelopmentContext _context;
+
+        public StockRepository(DevelopmentContext context)
         {
-            Dictionary<string, double> result = new Dictionary<string, double>();
+            _context = context;
+        }
+        public async Task<decimal?> GetStockPrice(string stockSymbol)
+        {
+            try
+            {
+                var stock = await _context.StockPrices.Where(x => x.Symbol.ToLower() == stockSymbol.ToLower()).FirstOrDefaultAsync();
+                return stock?.Price;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<StockPrice>> GetStockPrice(List<string> stockSymbolList)
+        {
+            List<StockPrice> result = new List<StockPrice>();
+
+            try
+            {
+                foreach (var symbol in stockSymbolList)
+                {
+                    var stock = await _context.StockPrices.Where(x => x.Symbol.ToLower() == symbol.ToLower()).FirstOrDefaultAsync();
+                    if (stock != null)
+                    {
+                        result.Add(stock);
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+
             return result;
         }
-        public double GetStockPrice(string stockSymbol) 
+
+        public async Task<List<StockPrice>> GetStockPrice(int pageNumber, int pageSize)
         {
-            return 1.2;
-        }
-        public Dictionary<string, double> GetStockPrice(string[] stockSymbolList, int pageNumber, int pageSize) 
-        {
-            Dictionary<string, double> result = new Dictionary<string, double>();
-            return result;
+            List<StockPrice> stockList = new List<StockPrice>();
+
+            try
+            {
+                stockList = await _context.StockPrices
+                    .OrderBy(s => s.Symbol)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+            }
+            catch
+            {
+                throw;
+            }
+
+            return stockList;
         }
     }
 }
