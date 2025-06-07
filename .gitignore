@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/code/.vs
+/code/StockExchangeAPI/.vs
+/code/StockExchangeAPI/DataAccess/obj/Debug/net6.0
+/code/StockExchangeAPI/DataAccess/obj
+/code/StockExchangeAPI/Repository/obj/Debug/net6.0
