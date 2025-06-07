@@ -24,7 +24,7 @@ namespace Repository.RepoClasses
             try
             {
                 await _context.StockTransactions.AddAsync(transaction);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch
             {
