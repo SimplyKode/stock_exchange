@@ -24,14 +24,6 @@ namespace Repository.RepoClasses
             try
             {
                 await _context.StockTransactions.AddAsync(transaction);
-
-                //Update the average stock price in Stock Price table
-                var stockPriceEntity = await _context.StockPrices.Where(s => s.Symbol.ToLower() == transaction.Stocksymbol.ToLower()).FirstOrDefaultAsync();
-                if (stockPriceEntity != null)
-                {
-                    var newAverageStockPrice = (stockPriceEntity.Price + transaction.Unitprice) / 2;
-                    stockPriceEntity.Price = newAverageStockPrice;
-                }
                 _context.SaveChanges();
             }
             catch

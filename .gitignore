@@ -12,3 +12,5 @@
 /code/StockExchangeAPI/Repository/bin/Debug/net6.0
 /code/StockExchangeAPI/Repository/obj
 /code/StockExchangeAPI/StockExchangeAPI/bin/Debug/net6.0
+/code/StockExchangeAPI/StockExchange.Tests/bin/Debug/net7.0
+/code/StockExchangeAPI/StockExchange.Tests/obj

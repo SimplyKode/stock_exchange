@@ -18,60 +18,75 @@ namespace Repository.RepoClasses
         {
             _context = context;
         }
-        public async Task<decimal?> GetStockPrice(string stockSymbol)
+        public async Task<StockPriceDto> GetStockPrice(string stockSymbol)
         {
-            try
+            var avgPrice = await _context.StockTransactions
+                                .Where(t => t.Stocksymbol.ToLower() == stockSymbol.ToLower())
+                                .AverageAsync(t => t.Unitprice);
+
+            if (avgPrice == null)
             {
-                var stock = await _context.StockPrices.Where(x => x.Symbol.ToLower() == stockSymbol.ToLower()).FirstOrDefaultAsync();
-                return stock?.Price;
+                return null;
             }
-            catch
+
+            return new StockPriceDto
             {
-                throw;
-            }
+                StockSymbol = stockSymbol.ToUpper(),
+                AveragePrice = avgPrice.Value
+            };
         }
 
-        public async Task<List<StockPrice>> GetStockPrice(List<string> stockSymbolList)
+        public async Task<List<StockPriceDto>> GetStockPrice(List<string> stockSymbolList)
         {
-            List<StockPrice> result = new List<StockPrice>();
+            List<StockPriceDto> result = new List<StockPriceDto>();
 
             try
             {
-                foreach (var symbol in stockSymbolList)
-                {
-                    var stock = await _context.StockPrices.Where(x => x.Symbol.ToLower() == symbol.ToLower()).FirstOrDefaultAsync();
-                    if (stock != null)
-                    {
-                        result.Add(stock);
-                    }
-                }
+                var symbolList = stockSymbolList.Select(s => s.ToLower()).ToList();
+
+                result = await _context.StockTransactions
+                                    .Where(t => symbolList.Contains(t.Stocksymbol.ToLower()))
+                                    .GroupBy(t => t.Stocksymbol)
+                                    .Select(g => new StockPriceDto
+                                    {
+                                        StockSymbol = g.Key,
+                                        AveragePrice = g.Average(t => t.Unitprice)
+                                    }).ToListAsync();
             }
-            catch
+            catch 
             {
                 throw;
             }
 
             return result;
+            
         }
 
-        public async Task<List<StockPrice>> GetStockPrice(int pageNumber, int pageSize)
+        public async Task<List<StockPriceDto>> GetStockPrice(int pageNumber, int pageSize)
         {
-            List<StockPrice> stockList = new List<StockPrice>();
+            List<StockPriceDto> result = new List<StockPriceDto>();
 
             try
             {
-                stockList = await _context.StockPrices
-                    .OrderBy(s => s.Symbol)
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToListAsync();
+                result = await _context.StockTransactions
+                                    .GroupBy(t => t.Stocksymbol)
+                                    .OrderBy(g => g.Key)
+                                    .Skip((pageNumber - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .Select(g => new StockPriceDto
+                                    {
+                                        StockSymbol = g.Key,
+                                        AveragePrice = g.Average(t => t.Unitprice)
+                                    })
+                                    .ToListAsync();
             }
+
             catch
             {
                 throw;
             }
 
-            return stockList;
+            return result;            
         }
     }
 }

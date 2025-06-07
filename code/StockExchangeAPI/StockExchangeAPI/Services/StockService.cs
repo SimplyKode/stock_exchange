@@ -15,20 +15,27 @@ namespace StockExchangeAPI.Services
         }
         public async Task<decimal?> GetStockPrice(string stockSymbol)
         {
+            StockPriceDto dto = new StockPriceDto();
             try
             {
                 if (string.IsNullOrEmpty(stockSymbol))
                 {
                     return null;
                 }
+
+                dto = await _stockRepo.GetStockPrice(stockSymbol);
+
+                if (dto == null)
+                {
+                    return null;
+                }
+
+                return dto.AveragePrice;
             }
             catch
             {
                 throw;
             }
-
-            return await _stockRepo.GetStockPrice(stockSymbol);
-
         }
         public async Task<Dictionary<string, decimal?>> GetStockPrice(List<string> stockSymbolList)
         {
@@ -40,29 +47,25 @@ namespace StockExchangeAPI.Services
                     return result;
                 }
 
-                var stockList = await _stockRepo.GetStockPrice(stockSymbolList);
+                var stockPriceDtoList = await _stockRepo.GetStockPrice(stockSymbolList);
 
-                if (stockList.Count == 0)
+                if (stockPriceDtoList.Count == 0)
                 {
                     return result;
                 }
 
                 foreach (var symbol in stockSymbolList)
                 {
-                    var matchingStock = stockList.Where(s => s.Symbol.ToLower() == symbol.ToLower()).FirstOrDefault();
+                    var matchingStock = stockPriceDtoList.Where(s => s.StockSymbol.ToLower() == symbol.ToLower()).ToList();
 
-                    if (result.ContainsKey(symbol))
-                    {
-                        continue;
-                    }
-                    if (matchingStock != null)
-                    {
-                        result.Add(matchingStock.Symbol, matchingStock.Price);
-                    }
-                    else
+                    if (matchingStock.Count == 0 || result.ContainsKey(symbol))
                     {
                         result.Add(symbol, null);
+                        continue;
                     }
+
+                    var averagePrice = matchingStock.Average(x => x.AveragePrice);                    
+                    result.Add(symbol, averagePrice);                    
                 }
             }
             catch
@@ -90,7 +93,8 @@ namespace StockExchangeAPI.Services
                 }
 
                 var stockList = await _stockRepo.GetStockPrice(pageNumber, pageSize);
-                stockList.ForEach(s => { result.Add(s.Symbol, s.Price); });
+
+                stockList.ForEach(s => { result.Add(s.StockSymbol, s.AveragePrice); });
             }
             catch
             {
