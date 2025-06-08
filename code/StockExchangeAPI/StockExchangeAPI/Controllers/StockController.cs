@@ -19,7 +19,7 @@ namespace StockExchangeAPI.Controllers
             _stockService = stockService;        
         }
 
-        [HttpGet(Name = "price")]
+        [HttpGet(Name = "getprice")]
         public async Task<IActionResult> GetStockPrice(string stockSymbol)
         {
             try
@@ -45,7 +45,7 @@ namespace StockExchangeAPI.Controllers
             }
         }
 
-        [HttpPost("list", Name = "GetPriceForList")]
+        [HttpPost("getpricelist", Name = "GetPriceForList")]
         public async Task<IActionResult> GetPriceForList([FromBody] List<string> symbolList)
         {
             try
@@ -71,7 +71,7 @@ namespace StockExchangeAPI.Controllers
             }
         }
 
-        [HttpPost("all", Name = "GetPriceForAll")]
+        [HttpPost("getpriceall", Name = "GetPriceForAll")]
         public async Task<IActionResult> GetPriceForAll(int pageNumber, int pageSize)
         {
             try

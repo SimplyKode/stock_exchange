@@ -21,7 +21,7 @@ namespace StockExchangeAPI.Controllers
             _transactionService = transactionService;        
         }
 
-        [HttpPost("transaction", Name = "ProcessTransaction")]
+        [HttpPost("process", Name = "ProcessTransaction")]
         public async Task<IActionResult> GetPriceForList([FromBody] StockTransaction transaction)
         {
             try

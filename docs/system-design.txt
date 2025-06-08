@@ -1,0 +1,22 @@
+Below is a short description on system design for the API
+----------------------------------------------------------------
+1. A .Net 6 Web API is created to 
+	- Process incoming notifications of stock trades
+	- Expose endpoints to get Stock Prices
+
+2. Whenever every new transaction is posted to the API, it is persisted in the API in a table
+
+3. The price of each stock is calculated based on the average of all the transactions that have taken place for that stock symbol
+
+Below are the endpoints of the API
+--------------------------------------
+GET api/stock/getprice	- Gets the average price of a single stock based on stock ticker symbol
+
+POST api/stock/getpricelist - Gets the average price of stocks based on the list of stock ticker symbols
+
+POST api/stock/getpriceall - Gets the paginated result of average price of all stocks in the database
+
+POST api/transaction/process - Saves the incoming transaction into the database table
+
+
+
