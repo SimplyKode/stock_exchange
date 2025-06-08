@@ -1,5 +1,4 @@
 ﻿using DataAccess.Models;
-using Microsoft.EntityFrameworkCore;
 using Repository.Interfaces;
 using StockExchangeAPI.Interfaces;
 

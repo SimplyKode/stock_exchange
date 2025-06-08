@@ -1,10 +1,6 @@
 using DataAccess.Models;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Repository.Interfaces;
 using StockExchangeAPI.Interfaces;
-using System.Transactions;
 
 namespace StockExchangeAPI.Controllers
 {
