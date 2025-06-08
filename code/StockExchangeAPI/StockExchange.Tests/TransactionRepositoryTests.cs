@@ -1,8 +1,6 @@
 ﻿using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using Repository.RepoClasses;
-using System.Threading.Tasks;
-using Xunit;
 
 public class TransactionRepositoryTests
 {

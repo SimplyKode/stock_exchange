@@ -1,10 +1,6 @@
 using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using Repository.RepoClasses;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
 public class StockRepositoryTests
 {
